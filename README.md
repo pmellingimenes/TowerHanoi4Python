@@ -7,4 +7,5 @@ It's fundamental to in install pygame module using pip, for example:
 ## Playing the game
 Execute the follow command in the source code directory:
    
-    python3 main.py
+    python3 main.py <Number of discs>
+    For example To play with 3 discs:  python3 main.py 3 

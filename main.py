@@ -2,9 +2,11 @@
 MG's Tower of Hanoi for Python - Main Module
 """
 import pygame
+import sys
 import models
+
 #disc number
-N = 3
+N = int(sys.argv[1])
 # Define some colors constants
 BLACK = [0, 0, 0]
 WHITE = [255, 255, 255]
@@ -131,5 +133,5 @@ while not done:
     pygame.display.flip()
     # --- Limit to 60 frames per second
     clock.tick(60)
-    
+
 pygame.quit()
