@@ -15,7 +15,7 @@ class Position(Block):
         self.pos_index = pos_index
         self.discs = []
 class Disc(Block):
-    def __init__(self,current_pos,size,color, width, height):
+    def __init__(self,current_pos,id,color, width, height):
         Block.__init__(self,color, width, height)
         self.current_pos = current_pos
-        self.size = size
+        self.id = id
