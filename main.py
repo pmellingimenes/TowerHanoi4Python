@@ -83,10 +83,13 @@ while not done:
             drop = False
             for i in range(0,N):
                 if discs[i].is_clicked():
-                    disc_index = i
-                    last_pos = [discs[i].rect.x,discs[i].rect.y]
-                    move = True
-                    break
+                    current_pos = discs[i].current_pos
+                    pos_length = len(all_pos[current_pos].discs)
+                    if discs[i] == all_pos[current_pos].discs[pos_length-1]:
+                        disc_index = i
+                        last_pos = [discs[i].rect.x,discs[i].rect.y]
+                        move = True
+                        break
         elif event.type == pygame.MOUSEBUTTONUP:
             drag = False
             drop = True
@@ -99,8 +102,12 @@ while not done:
             discs[disc_index].rect.y = pos[1] - (discs[disc_index].height/2)
     elif drop:
         if move:
-            discs[disc_index].rect.x = last_pos[0]
-            discs[disc_index].rect.y = last_pos[1]
+            position = pygame.sprite.spritecollideany(discs[disc_index],pos_sprites_list)
+            if position != None:
+                print(position.__dict__)
+            else:
+                discs[disc_index].rect.x = last_pos[0]
+                discs[disc_index].rect.y = last_pos[1]
             move = False
     all_sprites_list.draw(screen)
     # --- update  screen.
