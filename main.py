@@ -24,9 +24,10 @@ POS_WIDTH = 20
 POS_HEIGHT = 200
 DISC_WIDTH = 200
 DISC_HEIGHT = POS_WIDTH
+# Game min movements
+GAME_MIN_MOVES = (2**N) - 1
 # Init pygame
 pygame.init()
-
 # Define the screen (and it's properties)
 size = [SCREEN_WIDTH, SCREEN_HEIGHT]
 screen = pygame.display.set_mode(size)
@@ -71,10 +72,18 @@ drop = False
 move = False
 disc_index = None
 last_pos = [0,0]
+# Moves counter
+moves_counter = 0
 # Manage how fast the screen updates
 clock = pygame.time.Clock()
 # -------- Main Game Loop -----------
 while not done:
+    font = pygame.font.SysFont('Calibri', 25, True, False)
+ 
+    # Sideways text
+    text = font.render("Sideways text", True, BLACK)
+    text = pygame.transform.rotate(text, 90)
+    screen.blit(text, [0, 0])
     # --- Main event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -95,6 +104,14 @@ while not done:
             drop = True
             
     screen.fill(WHITE)
+    # Text font,size, bold and italic
+    font = pygame.font.SysFont('Calibri', 25, True, False)
+    # Info Texts
+    player_moves = font.render("Player moves: "+str(moves_counter), True, BLACK)
+    min_moves = font.render("Minimum of required movements: "+str(GAME_MIN_MOVES), True, BLACK)
+    screen.blit(player_moves, [20, 20])
+    screen.blit(min_moves, [20, 40])
+    
     if drag:
         if move:
             pos = pygame.mouse.get_pos()
@@ -118,12 +135,14 @@ while not done:
                         turn_back = False
                         change = True
             if change:
+                moves_counter = moves_counter + 1
                 all_pos[current_pos].discs.remove(discs[disc_index])
                 discs[disc_index].current_pos = new_pos
                 all_pos[new_pos].discs.append(discs[disc_index])                
                 new_pos_length = len(all_pos[new_pos].discs)
                 discs[disc_index].rect.x = all_pos[new_pos].rect.x - ((DISC_WIDTH/(discs[disc_index].id+1)/2)-(DISC_HEIGHT/2))
                 discs[disc_index].rect.y = (BOARD_Y - DISC_HEIGHT) - (DISC_HEIGHT*(new_pos_length-1))
+                print("Current player moves: "+ str(moves_counter))
             if turn_back:
                 discs[disc_index].rect.x = last_pos[0]
                 discs[disc_index].rect.y = last_pos[1]
