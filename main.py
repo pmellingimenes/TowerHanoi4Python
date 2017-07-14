@@ -4,7 +4,7 @@ MG's Tower of Hanoi for Python - Main Module
 import pygame
 import models
 #disc number
-N = 7  
+N = 3
 # Define some colors constants
 BLACK = [0, 0, 0]
 WHITE = [255, 255, 255]
@@ -47,8 +47,7 @@ second_pos.rect.y= BOARD_Y - POS_HEIGHT
 third_pos = models.Position(2,BOARD_COLOR,POS_WIDTH,POS_HEIGHT)
 third_pos.rect.x = (BOARD_X + BOARD_WIDTH) - POS_WIDTH
 third_pos.rect.y= BOARD_Y - POS_HEIGHT
-
-all_pos = [first_pos,second_pos,first_pos,third_pos]
+all_pos = [first_pos,second_pos,third_pos]
 all_sprites_list.add([game_board,all_pos])
 pos_sprites_list.add(all_pos)
 discs = []
@@ -117,12 +116,12 @@ while not done:
                         turn_back = False
                         change = True
             if change:
-                print(new_pos)
                 all_pos[current_pos].discs.remove(discs[disc_index])
                 discs[disc_index].current_pos = new_pos
                 all_pos[new_pos].discs.append(discs[disc_index])                
-                discs[disc_index].rect.x = position.rect.x
-                discs[disc_index].rect.y = position.rect.y
+                new_pos_length = len(all_pos[new_pos].discs)
+                discs[disc_index].rect.x = all_pos[new_pos].rect.x - ((DISC_WIDTH/(discs[disc_index].id+1)/2)-(DISC_HEIGHT/2))
+                discs[disc_index].rect.y = (BOARD_Y - DISC_HEIGHT) - (DISC_HEIGHT*(new_pos_length-1))
             if turn_back:
                 discs[disc_index].rect.x = last_pos[0]
                 discs[disc_index].rect.y = last_pos[1]
@@ -132,5 +131,5 @@ while not done:
     pygame.display.flip()
     # --- Limit to 60 frames per second
     clock.tick(60)
-
+    
 pygame.quit()
