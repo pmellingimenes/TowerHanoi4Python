@@ -78,12 +78,6 @@ moves_counter = 0
 clock = pygame.time.Clock()
 # -------- Main Game Loop -----------
 while not done:
-    font = pygame.font.SysFont('Calibri', 25, True, False)
- 
-    # Sideways text
-    text = font.render("Sideways text", True, BLACK)
-    text = pygame.transform.rotate(text, 90)
-    screen.blit(text, [0, 0])
     # --- Main event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -104,13 +98,18 @@ while not done:
             drop = True
             
     screen.fill(WHITE)
+    # Title line
+    pygame.draw.line(screen, BLACK, [0, 60], [SCREEN_WIDTH,60], 5) 
     # Text font,size, bold and italic
     font = pygame.font.SysFont('Calibri', 25, True, False)
+    title_font = pygame.font.SysFont('Calibri', 50, False, False)
     # Info Texts
+    game_title = title_font.render("MG's Tower of Hanoi ", True, BLACK)
     player_moves = font.render("Player moves: "+str(moves_counter), True, BLACK)
     min_moves = font.render("Minimum of required movements: "+str(GAME_MIN_MOVES), True, BLACK)
-    screen.blit(player_moves, [20, 20])
-    screen.blit(min_moves, [20, 40])
+    screen.blit(game_title, [((SCREEN_WIDTH/2)-(player_moves.get_width())),20])
+    screen.blit(player_moves, [20, 80])
+    screen.blit(min_moves, [20, 100])
     
     if drag:
         if move:
@@ -152,5 +151,4 @@ while not done:
     pygame.display.flip()
     # --- Limit to 60 frames per second
     clock.tick(60)
-
 pygame.quit()
