@@ -70,6 +70,7 @@ done = False
 drag = False
 drop = False
 move = False
+game_over = False
 disc_index = None
 last_pos = [0,0]
 # Moves counter
@@ -101,51 +102,61 @@ while not done:
     # Title line
     pygame.draw.line(screen, BLACK, [0, 60], [SCREEN_WIDTH,60], 5) 
     # Text font,size, bold and italic
-    font = pygame.font.SysFont('Calibri', 25, True, False)
+    font = pygame.font.SysFont('Calibri', 30, False, False)
     title_font = pygame.font.SysFont('Calibri', 50, False, False)
     # Info Texts
     game_title = title_font.render("MG's Tower of Hanoi ", True, BLACK)
     player_moves = font.render("Player moves: "+str(moves_counter), True, BLACK)
     min_moves = font.render("Minimum of required movements: "+str(GAME_MIN_MOVES), True, BLACK)
-    screen.blit(game_title, [((SCREEN_WIDTH/2)-(player_moves.get_width())),20])
+    screen.blit(game_title, [((SCREEN_WIDTH/2)-(game_title.get_width()/2)),20])
     screen.blit(player_moves, [20, 80])
-    screen.blit(min_moves, [20, 100])
-    
-    if drag:
-        if move:
-            pos = pygame.mouse.get_pos()
-            discs[disc_index].rect.x = pos[0] - (discs[disc_index].width/2)
-            discs[disc_index].rect.y = pos[1] - (discs[disc_index].height/2)
-    elif drop:
-        if move:
-            current_pos = discs[disc_index].current_pos
-            new_pos = None
-            change = False
-            turn_back = True
-            position = pygame.sprite.spritecollideany(discs[disc_index],pos_sprites_list)
-            if position != None:
-                new_pos = position.pos_index
-                if new_pos != current_pos:
-                    disc_length = len(position.discs)
-                    if disc_length == 0:
-                        turn_back = False
-                        change = True
-                    elif discs[disc_index].id > position.discs[disc_length-1].id:
-                        turn_back = False
-                        change = True
-            if change:
-                moves_counter = moves_counter + 1
-                all_pos[current_pos].discs.remove(discs[disc_index])
-                discs[disc_index].current_pos = new_pos
-                all_pos[new_pos].discs.append(discs[disc_index])                
-                new_pos_length = len(all_pos[new_pos].discs)
-                discs[disc_index].rect.x = all_pos[new_pos].rect.x - ((DISC_WIDTH/(discs[disc_index].id+1)/2)-(DISC_HEIGHT/2))
-                discs[disc_index].rect.y = (BOARD_Y - DISC_HEIGHT) - (DISC_HEIGHT*(new_pos_length-1))
-                print("Current player moves: "+ str(moves_counter))
-            if turn_back:
-                discs[disc_index].rect.x = last_pos[0]
-                discs[disc_index].rect.y = last_pos[1]
-            move = False
+    screen.blit(min_moves, [20, 110])
+    if game_over:
+        if len(all_pos[2].discs) == N:
+            game_over_title = font.render("Congratulations! You just finished the game with the minimums movements! :)", True, BLACK)
+            screen.blit(game_over_title, [((SCREEN_WIDTH/2)-(game_over_title.get_width()/2)),SCREEN_HEIGHT/2])
+        else:
+            game_over_title = font.render("Congratulations. You just finished the game, now try again with the minimums movements! ;)", True, BLACK)
+            screen.blit(game_over_title, [((SCREEN_WIDTH/2)-(game_over_title.get_width()/2)),SCREEN_HEIGHT/2])
+
+    else:
+        if drag:
+            if move:
+                pos = pygame.mouse.get_pos()
+                discs[disc_index].rect.x = pos[0] - (discs[disc_index].width/2)
+                discs[disc_index].rect.y = pos[1] - (discs[disc_index].height/2)
+        elif drop:
+            if move:
+                current_pos = discs[disc_index].current_pos
+                new_pos = None
+                change = False
+                turn_back = True
+                position = pygame.sprite.spritecollideany(discs[disc_index],pos_sprites_list)
+                if position != None:
+                    new_pos = position.pos_index
+                    if new_pos != current_pos:
+                        disc_length = len(position.discs)
+                        if disc_length == 0:
+                            turn_back = False
+                            change = True
+                        elif discs[disc_index].id > position.discs[disc_length-1].id:
+                            turn_back = False
+                            change = True
+                if change:
+                    moves_counter = moves_counter + 1
+                    all_pos[current_pos].discs.remove(discs[disc_index])
+                    discs[disc_index].current_pos = new_pos
+                    all_pos[new_pos].discs.append(discs[disc_index])                
+                    new_pos_length = len(all_pos[new_pos].discs)
+                    discs[disc_index].rect.x = all_pos[new_pos].rect.x - ((DISC_WIDTH/(discs[disc_index].id+1)/2)-(DISC_HEIGHT/2))
+                    discs[disc_index].rect.y = (BOARD_Y - DISC_HEIGHT) - (DISC_HEIGHT*(new_pos_length-1))
+                    #Check if the game is over
+                    if (len(all_pos[2].discs) == N):
+                        game_over = True
+                if turn_back:
+                    discs[disc_index].rect.x = last_pos[0]
+                    discs[disc_index].rect.y = last_pos[1]
+                move = False
     all_sprites_list.draw(screen)
     # --- update  screen.
     pygame.display.flip()
