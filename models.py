@@ -1,3 +1,6 @@
+"""
+MG's Tower of Hanoi for Python - Models Module
+"""
 import pygame
 class Block(pygame.sprite.Sprite):
     def __init__(self, color, width, height):

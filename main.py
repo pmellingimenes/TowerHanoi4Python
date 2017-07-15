@@ -113,11 +113,12 @@ while not done:
     screen.blit(min_moves, [20, 110])
     if game_over:
         if len(all_pos[2].discs) == N:
-            game_over_title = font.render("Congratulations! You just finished the game with the minimums movements! :)", True, BLACK)
-            screen.blit(game_over_title, [((SCREEN_WIDTH/2)-(game_over_title.get_width()/2)),SCREEN_HEIGHT/2])
-        else:
-            game_over_title = font.render("Congratulations. You just finished the game, now try again with the minimums movements! ;)", True, BLACK)
-            screen.blit(game_over_title, [((SCREEN_WIDTH/2)-(game_over_title.get_width()/2)),SCREEN_HEIGHT/2])
+            if moves_counter == GAME_MIN_MOVES:
+                game_over_title = font.render("Congratulations! You just finished the game with the minimums movements! :)", True, BLACK)
+                screen.blit(game_over_title, [((SCREEN_WIDTH/2)-(game_over_title.get_width()/2)),SCREEN_HEIGHT/2])
+            else:
+                game_over_title = font.render("You just finished the game, now try again with the minimums movements! ;)", True, BLACK)
+                screen.blit(game_over_title, [((SCREEN_WIDTH/2)-(game_over_title.get_width()/2)),SCREEN_HEIGHT/2])
 
     else:
         if drag:
