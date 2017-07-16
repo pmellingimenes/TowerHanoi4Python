@@ -4,7 +4,6 @@ MG's Tower of Hanoi for Python - Main Module
 import pygame
 import sys
 import models
-
 #disc number
 N = int(sys.argv[1])
 # Define some colors constants
@@ -26,13 +25,24 @@ DISC_WIDTH = 200
 DISC_HEIGHT = POS_WIDTH
 # Game min movements
 GAME_MIN_MOVES = (2**N) - 1
+# Draw the game discs function
+def draw_discs():
+    for i in range(0,N):
+        if i % 2 == 0:
+            disc = models.Disc(0,i,RED,(DISC_WIDTH/(i+1)),DISC_HEIGHT)
+        else:
+            disc = models.Disc(0,i,GREEN,(DISC_WIDTH/(i+1)),DISC_HEIGHT)
+        disc.rect.x = BOARD_X - ((DISC_WIDTH/(i+1)/2)-(DISC_HEIGHT/2))
+        disc.rect.y = (BOARD_Y - DISC_HEIGHT) - (DISC_HEIGHT*i)
+        discs.append(disc)
+        all_pos[0].discs.append(disc)
+
 # Init pygame
 pygame.init()
 # Define the screen (and it's properties)
 size = [SCREEN_WIDTH, SCREEN_HEIGHT]
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("MG's Tower of Hanoi for Python")
-
 # Define the game sprites lists
 all_sprites_list = pygame.sprite.Group()
 pos_sprites_list = pygame.sprite.Group()
@@ -53,17 +63,9 @@ third_pos.rect.y= BOARD_Y - POS_HEIGHT
 all_pos = [first_pos,second_pos,third_pos]
 all_sprites_list.add([game_board,all_pos])
 pos_sprites_list.add(all_pos)
+# Init game discs
 discs = []
-# Draw the game discs
-for i in range(0,N):
-    if i % 2 == 0:
-        disc = models.Disc(0,i,RED,(DISC_WIDTH/(i+1)),DISC_HEIGHT)
-    else:
-        disc = models.Disc(0,i,GREEN,(DISC_WIDTH/(i+1)),DISC_HEIGHT)
-    disc.rect.x = BOARD_X - ((DISC_WIDTH/(i+1)/2)-(DISC_HEIGHT/2))
-    disc.rect.y = (BOARD_Y - DISC_HEIGHT) - (DISC_HEIGHT*i)
-    discs.append(disc)
-    all_pos[0].discs.append(disc)
+draw_discs()
 all_sprites_list.add(discs)
 # Discs' move variables
 done = False
@@ -73,6 +75,15 @@ move = False
 game_over = False
 disc_index = None
 last_pos = [0,0]
+# Buttons sprites
+btn_play_again = models.Button("Play again",BLACK,30,'Calibri',GREEN,130,30)
+btn_quit = models.Button("Quit",BLACK,30,'Calibri',RED,70,30)
+btn_quit.rect.x = SCREEN_WIDTH/2 + 80
+btn_quit.rect.y = SCREEN_HEIGHT/2 - 40
+btn_quit.render_text()
+btn_play_again.rect.x = SCREEN_WIDTH/2 - 80
+btn_play_again.rect.y = SCREEN_HEIGHT/2 - 40
+btn_play_again.render_text()
 # Moves counter
 moves_counter = 0
 # Manage how fast the screen updates
@@ -86,14 +97,27 @@ while not done:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             drag = True
             drop = False
-            for i in range(0,N):
-                if discs[i].is_clicked():
-                    current_pos = discs[i].current_pos
-                    pos_length = len(all_pos[current_pos].discs)
-                    if discs[i] == all_pos[current_pos].discs[pos_length-1]:
-                        disc_index = i
-                        last_pos = [discs[i].rect.x,discs[i].rect.y]
-                        move = True
+            if not game_over:
+                for i in range(0,N):
+                    if discs[i].is_clicked():
+                        current_pos = discs[i].current_pos
+                        pos_length = len(all_pos[current_pos].discs)
+                        if discs[i] == all_pos[current_pos].discs[pos_length-1]:
+                            disc_index = i
+                            last_pos = [discs[i].rect.x,discs[i].rect.y]
+                            move = True
+            else:
+                if btn_quit.is_clicked():
+                    done = True
+                if btn_play_again.is_clicked():
+                    all_sprites_list.remove(discs)
+                    all_pos[2].discs = []
+                    moves_counter = 0
+                    discs = []
+                    draw_discs()
+                    all_sprites_list.add(discs)
+                    all_sprites_list.remove([btn_play_again,btn_quit])
+                    game_over = False
         elif event.type == pygame.MOUSEBUTTONUP:
             drag = False
             drop = True
@@ -119,7 +143,6 @@ while not done:
             else:
                 game_over_title = font.render("You just finished the game, now try again with the minimums movements! ;)", True, BLACK)
                 screen.blit(game_over_title, [((SCREEN_WIDTH/2)-(game_over_title.get_width()/2)),SCREEN_HEIGHT/2])
-
     else:
         if drag:
             if move:
@@ -154,6 +177,8 @@ while not done:
                     #Check if the game is over
                     if (len(all_pos[2].discs) == N):
                         game_over = True
+                        all_sprites_list.add(btn_quit)
+                        all_sprites_list.add(btn_play_again)
                 if turn_back:
                     discs[disc_index].rect.x = last_pos[0]
                     discs[disc_index].rect.y = last_pos[1]

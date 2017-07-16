@@ -22,3 +22,14 @@ class Disc(Block):
         Block.__init__(self,color, width, height)
         self.current_pos = current_pos
         self.id = id
+class Button(Block):
+    def __init__(self,text,text_color,text_size,text_font,color, width, height):
+        Block.__init__(self,color, width, height)
+        self.text = text
+        self.text_color = text_color
+        self.font = pygame.font.SysFont(text_font, text_size, False, False)
+        self.text_render = self.font.render(text, 1, text_color)
+    def render_text(self):
+        w = (self.width/2-(self.text_render.get_width()/2))
+        h = (self.height/2-(self.text_render.get_height()/2))
+        self.image.blit(self.text_render,[w,h])
