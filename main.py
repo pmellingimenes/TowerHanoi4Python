@@ -7,33 +7,27 @@ import sys
 # Define screen constants
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
-# Create game object
-game = models.Game(int(sys.argv[1]),SCREEN_WIDTH,SCREEN_HEIGHT)
-game.draw_discs()
+# Color constants object
+color = models.ColorConstants()
 # Init pygame
 pygame.init()
 # Define the screen (and it's properties)
 size = [SCREEN_WIDTH, SCREEN_HEIGHT]
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("MG's Tower of Hanoi for Python")
+# Create main menu object
+menu = models.MainMenu(SCREEN_WIDTH,SCREEN_HEIGHT)
+# Create game object
+game = models.Game(SCREEN_WIDTH,SCREEN_HEIGHT)
 # Discs' move variables
 done = False
 drag = False
 drop = False
 move = False
 game_over = False
-init_game = True
+init_game = False
 disc_index = None
 last_pos = [0,0]
-# Buttons sprites
-btn_play_again = models.Button("Play again",game.BLACK,30,'Calibri',game.GREEN,130,30)
-btn_quit = models.Button("Quit",game.BLACK,30,'Calibri',game.RED,70,30)
-btn_quit.rect.x = SCREEN_WIDTH/2 + 80
-btn_quit.rect.y = SCREEN_HEIGHT/2 - 40
-btn_quit.render_text()
-btn_play_again.rect.x = SCREEN_WIDTH/2 - 80
-btn_play_again.rect.y = SCREEN_HEIGHT/2 - 40
-btn_play_again.render_text()
 # Moves counter
 moves_counter = 0
 # Manage how fast the screen updates
@@ -58,16 +52,32 @@ while not done:
                                 last_pos = [game.discs[i].rect.x,game.discs[i].rect.y]
                                 move = True
                 else:
-                    if btn_quit.is_clicked():
+                    if menu.btn_quit.is_clicked():
                         done = True
-                    if btn_play_again.is_clicked():
+                    if menu.btn_play_again.is_clicked():
                         game.sprites_list.remove(game.discs)
                         game.positions[2].discs = []
                         moves_counter = 0
                         game.discs = []
                         game.draw_discs()
-                        game.sprites_list.remove([btn_play_again,btn_quit])
                         game_over = False
+                    if menu.btn_return.is_clicked():
+                        menu.sprites_list.remove([menu.btn_play_again,menu.btn_return,menu.btn_quit])
+                        menu.sprites_list.add(menu.btn_discs)
+                        game.sprites_list.remove(game.discs)
+                        init_game = False
+            else:
+                for i in range(0,len(menu.btn_discs)):
+                    if menu.btn_discs[i].is_clicked():
+                        game.set_n_discs(menu.btn_discs[i].value)
+                        game.sprites_list.remove(game.discs)
+                        game.discs = []
+                        game.positions[2].discs = []
+                        moves_counter = 0
+                        game.draw_discs()
+                        init_game = True
+                        game_over = False
+                        break
         elif event.type == pygame.MOUSEBUTTONUP:
             drag = False
             drop = True
@@ -78,21 +88,21 @@ while not done:
     font = pygame.font.SysFont('Calibri', 30, False, False)
     title_font = pygame.font.SysFont('Calibri', 50, False, False)
     # Info Texts
-    game_title = title_font.render("MG's Tower of Hanoi ", True, game.BLACK)
+    game_title = title_font.render("MG's Tower of Hanoi ", True, color.BLACK)
     screen.blit(game_title, [((SCREEN_WIDTH/2)-(game_title.get_width()/2)),20])
     if init_game:
-        player_moves = font.render("Player moves: "+str(moves_counter), True, game.BLACK)
-        min_moves = font.render("Minimum of required movements: "+str(game.min_moves), True, game.BLACK)
-
+        player_moves = font.render("Player moves: "+str(moves_counter), True, color.BLACK)
+        min_moves = font.render("Minimum of required movements: "+str(game.min_moves), True, color.BLACK)
         screen.blit(player_moves, [20, 80])
         screen.blit(min_moves, [20, 110])
         if game_over:
+            menu.sprites_list.draw(screen)
             if len(game.positions[2].discs) == game.n_discs:
                 if moves_counter == game.min_moves:
-                    game_over_title = font.render("Congratulations! You just finished the game with the minimums movements! :)", True, game.BLACK)
+                    game_over_title = font.render("Congratulations! You just finished the game with the minimums movements! :)", True, color.BLACK)
                     screen.blit(game_over_title, [((SCREEN_WIDTH/2)-(game_over_title.get_width()/2)),SCREEN_HEIGHT/2])
                 else:
-                    game_over_title = font.render("You just finished the game, now try again with the minimums movements! ;)", True, game.BLACK)
+                    game_over_title = font.render("You just finished the game, now try again with the minimums movements! ;)", True, color.BLACK)
                     screen.blit(game_over_title, [((SCREEN_WIDTH/2)-(game_over_title.get_width()/2)),SCREEN_HEIGHT/2])
         else:
             if drag:
@@ -128,13 +138,16 @@ while not done:
                         #Check if the game is over
                         if (len(game.positions[2].discs) == game.n_discs):
                             game_over = True
-                            game.sprites_list.add(btn_quit)
-                            game.sprites_list.add(btn_play_again)
+                            menu.sprites_list.add([menu.btn_play_again,menu.btn_quit,menu.btn_return])
+                            menu.sprites_list.remove([menu.label,menu.btn_discs])
                     if turn_back:
                         game.discs[disc_index].rect.x = last_pos[0]
                         game.discs[disc_index].rect.y = last_pos[1]
                     move = False
         game.sprites_list.draw(screen)
+    else:
+        menu.sprites_list.draw(screen)
+
     # --- update  screen.
     pygame.display.flip()
     # --- Limit to 60 frames per second

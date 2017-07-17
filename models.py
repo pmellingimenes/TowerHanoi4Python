@@ -2,6 +2,14 @@
 MG's Tower of Hanoi for Python - Models Module
 """
 import pygame
+# Color Constants class
+class ColorConstants():
+        RED = [255, 0, 0]
+        BLACK = [0, 0, 0]
+        GREEN = [0, 255, 0]
+        WHITE = [255, 255, 255]
+        BACKGROUND = [240, 248, 255]
+        BOARD_COLOR = [153, 76, 0]
 # Generic Block class
 class Block(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
@@ -40,18 +48,46 @@ class Button(Block):
         w = (self.width/2-(self.text_render.get_width()/2))
         h = (self.height/2-(self.text_render.get_height()/2))
         self.image.blit(self.text_render,[w,h])
+# Main Menu
+class MainMenu(ColorConstants):
+    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
+        self.SCREEN_WIDTH = SCREEN_WIDTH
+        self.SCREEN_HEIGHT = SCREEN_HEIGHT
+        self.sprites_list = pygame.sprite.Group()
+        self.btn_discs = []
+        self.label = Button("Select the number of discs",self.BLACK,30,'Calibri',self.WHITE,500,30)
+        self.label.rect.x = self.SCREEN_WIDTH/4
+        self.label.rect.y = self.SCREEN_HEIGHT/2 - 40
+        self.label.render_text()
+        self.sprites_list.add(self.label)
+        for i in range(3,8):
+            btn = Button(str(i),self.BLACK,30,'Calibri',self.BACKGROUND,20,30)
+            btn.rect.x = self.SCREEN_WIDTH/3 + 50*(i-2)
+            btn.rect.y = self.SCREEN_HEIGHT/2
+            btn.render_text()
+            btn.set_value(i)
+            self.btn_discs.append(btn)
+        self.sprites_list.add(self.btn_discs)
+        # Game over buttons        
+        self.btn_play_again = Button("Play again",self.BLACK,30,'Calibri',self.GREEN,130,30)
+        self.btn_return = Button("Return to menu",self.BLACK,30,'Calibri',self.BACKGROUND,150,30)
+        self.btn_quit = Button("Quit",self.BLACK,30,'Calibri',self.RED,70,30)
+        self.btn_play_again.rect.x = self.SCREEN_WIDTH/2 - (self.btn_return.image.get_width()*2)
+        self.btn_play_again.rect.y = self.SCREEN_HEIGHT/2 - 40
+        self.btn_play_again.render_text()
+        self.btn_return.rect.x = self.SCREEN_WIDTH/2  - self.btn_return.image.get_width()/2
+        self.btn_return.rect.y = self.SCREEN_HEIGHT/2 - 40
+        self.btn_return.render_text()
+        self.btn_quit.rect.x = self.SCREEN_WIDTH/2 + (self.btn_return.image.get_width())
+        self.btn_quit.rect.y = self.SCREEN_HEIGHT/2 - 40
+        self.btn_quit.render_text()
 # Game main class
-class Game():
-    def __init__(self,n_discs,SCREEN_WIDTH,SCREEN_HEIGHT):
+class Game(ColorConstants):
+    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
         # Game sprites groups
         self.sprites_list = pygame.sprite.Group()
         self.pos_sprites_list = pygame.sprite.Group()
         # Game constants
-        self.BLACK = [0, 0, 0]
-        self.WHITE = [255, 255, 255]
-        self.GREEN = [0, 255, 0]
-        self.RED = [255, 0, 0]
-        self.BOARD_COLOR = [153, 76, 0]
         self.BOARD_WIDTH = SCREEN_WIDTH/2
         self.BOARD_HEIGHT = 50
         self.BOARD_X = SCREEN_WIDTH * 0.25
@@ -63,8 +99,6 @@ class Game():
         # Positions and discs lists
         self.positions = []
         self.discs = []
-        # Set the number of discs and min movements
-        self.set_n_discs(n_discs)
         # Draw the game board and it's positions
         self.game_board = Block(self.BOARD_COLOR, self.BOARD_WIDTH,self.BOARD_HEIGHT)
         self.game_board.rect.x= self.BOARD_X
@@ -99,6 +133,3 @@ class Game():
             self.discs.append(disc)
             self.positions[0].discs.append(disc)
         self.sprites_list.add(self.discs)
-    # Draw game sprites on screen
-    def draw(screen):
-        self.sprites_list.draw(screen)
