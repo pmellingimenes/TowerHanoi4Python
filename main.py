@@ -63,7 +63,7 @@ while not done:
                         game_over = False
                     if menu.btn_return.is_clicked():
                         menu.sprites_list.remove([menu.btn_play_again,menu.btn_return,menu.btn_quit])
-                        menu.sprites_list.add(menu.btn_discs)
+                        menu.sprites_list.add([menu.btn_discs,menu.label])
                         game.sprites_list.remove(game.discs)
                         init_game = False
             else:
