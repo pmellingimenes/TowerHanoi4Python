@@ -68,7 +68,7 @@ class MainMenu(ColorConstants):
             btn.set_value(i)
             self.btn_discs.append(btn)
         self.sprites_list.add(self.btn_discs)
-        # Game over buttons        
+        # Game over buttons
         self.btn_play_again = Button("Play again",self.BLACK,30,'Calibri',self.GREEN,130,30)
         self.btn_return = Button("Return to menu",self.BLACK,30,'Calibri',self.BACKGROUND,150,30)
         self.btn_quit = Button("Quit",self.BLACK,30,'Calibri',self.RED,70,30)
@@ -104,7 +104,7 @@ class Game(ColorConstants):
         self.game_board.rect.x= self.BOARD_X
         self.game_board.rect.y= self.BOARD_Y
         first_pos = Position(0,self.BOARD_COLOR, self.POS_WIDTH,self.POS_HEIGHT)
-        first_pos.rect.x = self.BOARD_X 
+        first_pos.rect.x = self.BOARD_X
         first_pos.rect.y=  self.BOARD_Y - self.POS_HEIGHT
         second_pos = Position(1,self.BOARD_COLOR, self.POS_WIDTH,self.POS_HEIGHT)
         second_pos.rect.x = (self.BOARD_X + (self.BOARD_WIDTH/2)) - (self.POS_WIDTH/2)

@@ -83,7 +83,7 @@ while not done:
             drop = True
     screen.fill(game.WHITE)
     # Title line
-    pygame.draw.line(screen, game.BLACK, [0, 60], [SCREEN_WIDTH,60], 5) 
+    pygame.draw.line(screen, game.BLACK, [0, 60], [SCREEN_WIDTH,60], 5)
     # Text font,size, bold and italic
     font = pygame.font.SysFont('Calibri', 30, False, False)
     title_font = pygame.font.SysFont('Calibri', 50, False, False)
@@ -131,7 +131,7 @@ while not done:
                         moves_counter = moves_counter + 1
                         game.positions[current_pos].discs.remove(game.discs[disc_index])
                         game.discs[disc_index].current_pos = new_pos
-                        game.positions[new_pos].discs.append(game.discs[disc_index])                
+                        game.positions[new_pos].discs.append(game.discs[disc_index])
                         new_pos_length = len(game.positions[new_pos].discs)
                         game.discs[disc_index].rect.x = game.positions[new_pos].rect.x - ((game.DISC_WIDTH/(game.discs[disc_index].id+1)/2)-(game.DISC_HEIGHT/2))
                         game.discs[disc_index].rect.y = (game.BOARD_Y - game.DISC_HEIGHT) - (game.DISC_HEIGHT*(new_pos_length-1))
