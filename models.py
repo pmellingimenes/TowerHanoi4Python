@@ -4,12 +4,12 @@ MG's Tower of Hanoi for Python - Models Module
 import pygame
 # Color Constants class
 class ColorConstants():
-        RED = [255, 0, 0]
-        BLACK = [0, 0, 0]
-        GREEN = [0, 255, 0]
-        WHITE = [255, 255, 255]
-        BACKGROUND = [240, 248, 255]
-        BOARD_COLOR = [153, 76, 0]
+        RED = (255, 0, 0)
+        BLACK = (0, 0, 0)
+        GREEN = (0, 255, 0)
+        WHITE = (255, 255, 255)
+        BACKGROUND = (240, 248, 255)
+        BOARD_COLOR = (153, 76, 0)
 # Generic Block class
 class Block(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
